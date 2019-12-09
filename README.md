@@ -1,10 +1,10 @@
-# GMSC - **g**RPC **m**etadata **s**afe **c**onverter
+# gmsc - **g**RPC **m**etadata **s**afe **c**onverter
 
 **g**RPC **m**etadata **s**afe **c**onverter.
 
 Converts a gRPC metadata to a Hash which can be safely converted to JSON.
 
-In gRPC, binary metadata is represented by a "-bin" suffix of a key, so GMSC checks the key and converts the value to the Base64 encoded format if necessary.
+In gRPC, binary metadata is represented by a "-bin" suffix of a key, so gmsc checks the key and converts the value to the Base64 encoded format if necessary.
 
 cf. https://github.com/grpc/grpc/blob/v1.25.0/doc/PROTOCOL-HTTP2.md  
 cf. https://github.com/grpc/grpc-go/blob/v1.25.0/Documentation/grpc-metadata.md#storing-binary-data-in-metadata
@@ -27,6 +27,8 @@ Or install it yourself as:
 
 ## Usage
 
+- without gmsc
+
 ```ruby
 [1] pry(main)> metadata = {
 [1] pry(main)*   "user-agent"      => "grpc-node/1.19.0 grpc-c/7.0.0 (linux; chttp2; gold)".encode(Encoding::ASCII_8BIT),
@@ -34,10 +36,18 @@ Or install it yourself as:
 [1] pry(main)* }
 => {"user-agent"=>"grpc-node/1.19.0 grpc-c/7.0.0 (linux; chttp2; gold)", "binary-data-bin"=>"\x00\x01\x02\xEA"}
 
-[2] pry(main)> GMSC.safe_convert(metadata)
+[2] pry(main)> metadata.to_json
+Encoding::UndefinedConversionError: "\xEA" from ASCII-8BIT to UTF-8
+from (pry):5:in `encode'
+```
+
+- with gmsc
+
+```ruby
+[3] pry(main)> GMSC.safe_convert(metadata)
 => {"user-agent"=>"grpc-node/1.19.0 grpc-c/7.0.0 (linux; chttp2; gold)", "binary-data-bin"=>"AAEC6g=="}
 
-[3] pry(main)> GMSC.safe_convert(metadata).to_json
+[4] pry(main)> GMSC.safe_convert(metadata).to_json
 => "{\"user-agent\":\"grpc-node/1.19.0 grpc-c/7.0.0 (linux; chttp2; gold)\",\"binary-data-bin\":\"AAEC6g==\"}"
 ```
 
@@ -58,4 +68,4 @@ The gem is available as open source under the terms of the [MIT License](https:/
 
 ## Code of Conduct
 
-Everyone interacting in the GMSC project's codebases, issue trackers, chat rooms and mailing lists is expected to follow the [code of conduct](https://github.com/south37/gmsc/blob/master/CODE_OF_CONDUCT.md).
+Everyone interacting in the gmsc project's codebases, issue trackers, chat rooms and mailing lists is expected to follow the [code of conduct](https://github.com/south37/gmsc/blob/master/CODE_OF_CONDUCT.md).
