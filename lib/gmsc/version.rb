@@ -1,3 +1,3 @@
-module Gmsc
-  VERSION = "0.1.0"
+module GMSC
+  VERSION = "0.0.1"
 end
